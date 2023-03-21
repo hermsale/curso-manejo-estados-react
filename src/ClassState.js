@@ -1,10 +1,13 @@
 import React from 'react';
 import {Loading} from './Loading'
 
+const SECURITY_CODE = 'ASD123';
+
 class ClassState extends React.Component{
     constructor(props){
         super(props);
         this.state ={
+            value:'',
             error:false,
             loading:false,
         }
@@ -25,7 +28,12 @@ class ClassState extends React.Component{
         if(this.state.loading){
             setTimeout(() => {
                 console.log('Haciendo la validacion');
-                this.setState({loading:false});
+                if(SECURITY_CODE===this.state.value){
+                    this.setState({loading:false,error:false});
+                }else{
+                    this.setState({loading:false,error:true});
+                }
+                // this.setState({loading:false});
                 console.log(' Terminando la validacion');
             },3000)
         }
@@ -33,7 +41,7 @@ class ClassState extends React.Component{
 
     render(){
 
-        
+        console.log(this.state.value);
 
         return(
             <div>
@@ -49,13 +57,20 @@ class ClassState extends React.Component{
                 )}
 
                     <input
+                    value={this.state.value}
+                    onChange={(event) => this.setState({
+                        value: event.target.value,
+                        error: false
+                        }
+                        )
+                    }
                     type='text'
                     placeholder='Código de seguridad'/>
                 <button
                     // onClick={() =>
                     //     this.setState(prevState => 
                     //         ({error:!prevState.error}))}
-                    onClick={() => this.setState({loading:true})}
+                    onClick={() => this.setState({loading:true,error:false})}
                 >Comprobar</button>      
             </div>
         );
