@@ -10,7 +10,7 @@ function App() {
         name="UseState"
       />
       <UseReducer
-      name="ClassState"
+      name="UseReducer"
       />
 
     </div>

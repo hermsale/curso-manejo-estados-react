@@ -94,7 +94,7 @@ function UseReducer({ name }) {
                         value={state.value}
                         onChange={
                             (event) => {
-                                dispatch({type:'WRITE'})
+                                dispatch({type:'WRITE', payload: event.target.value})
                                 // onWrite(event);
                             }
                         }
@@ -143,18 +143,7 @@ function UseReducer({ name }) {
     }
 }
 
-
-
-
-
-const  initialState = {
-    value: '',
-    error: false,
-    loading: false,
-    deleted: false,
-    confirmed: false,
-}
-
+// metodos reducer 
 // const reducerIf = (state, action) => {
 //     if(action.type === 'ERROR') {
 //         return {
@@ -174,26 +163,50 @@ const  initialState = {
 //     }
 // }
 
-// const reducerSwitches = (state, action) => {
+// const reducerSwitches = (stateReducerSwitch, action) => {
 //     switch(action.type){
 //         case 'ERROR': return {
-//             ...state,
+//             ...stateReducerSwitch,
 //             loading: false,
 //             error: true
 //         }
 //         case 'CHECK': return {
-//             ...state,
+//             ...stateReducerSwitch,
 //             loading: true,
+//         }
+//         case 'CONFIRM': return {
+//             ...stateReducerSwitch,
+//             loading: false,
+//             error: false,
+//             confirmed: true
+//         }
+//         case 'WRITE': return {
+//             ...stateReducerSwitch,
+//             value: action.payload,
+//             error: false
+//         }
+//         case 'DELETE': return {
+//             ...stateReducerSwitch, deleted: true
+//         }
+//         case 'RESET': return {
+//         ...stateReducerSwitch, confirmed: false, value: '', deleted: false
 //         }
 //         default:
 //             return{
-//                 ...state
+//                 ...stateReducerSwitch
 //             }
 //     }
 // }
 
+const  initialState = {
+    value: '',
+    error: false,
+    loading: false,
+    deleted: false,
+    confirmed: false,
+}
 
-const reducerObjects = (state) => ({
+const reducerObjects = (state,payload) => ({
         'CONFIRM': {
             ...state,
             loading: false,
@@ -211,20 +224,20 @@ const reducerObjects = (state) => ({
         },
         'WRITE':{
             ...state,
-            value: event.target.value,
-            error: false
+            value: payload,
+            error: false,
         },
         'DELETE':{
-            ...state, deleted: true
+            ...state, deleted: true,
         },
         'RESET':{
-            ...state, confirmed: false, value: '', deleted: false
+            ...state, confirmed: false, value: '', deleted: false,
         }
 })
 
 const reducer = (state, action) => {
     if(reducerObjects(state)[action.type]){
-        return reducerObjects(state)[action.type];
+        return reducerObjects(state, action.payload)[action.type];
     }else{
         return {
             ...state,
