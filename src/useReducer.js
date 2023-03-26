@@ -4,53 +4,34 @@ const SECURITY_CODE = 'ASD123';
 
 function UseReducer({ name }) {
 
-    const [state, dispatch] = React.useReducer(reducer,initialState);
+    const [state, dispatch] = React.useReducer(reducerSwitches,initialState);
 
+// actualizaciones de estado semi declarativos ////////////////////////////////////
+    const onConfirm = () => {
+        dispatch({type:actionTypes.CONFIRM})
+    }
 
-    // const onConfirm = () => {
-    //     // setState({
-    //     //     ...state,
-    //     //     loading: false,
-    //     //     error: false,
-    //     //     confirmed: true
-    //     // });
-    // }
+    const onError = () => {
+        dispatch({type:actionTypes.ERROR})
+    };
 
-    // const onError = () => {
-    //     setState({
-    //         ...state,
-    //         loading: false,
-    //         error: true
-    //     });
-    // };
+    const onWrite = (event) => {
+        dispatch({type:actionTypes.WRITE, payload: event.target.value})
+    }
 
-    // const onWrite = (event) => {
-    //     setState({
-    //         ...state,
-    //         value: event.target.value,
-    //         error: false
-    //     });
-    // }
+    const onCheck = () => {
+        dispatch({type:actionTypes.CHECK})
+    };
 
-    // const onCheck = () => {
-    //     setState({
-    //         ...state,
-    //         loading: true
-    //     })
-    // };
+    const onDelete = () => {
+        dispatch({type:actionTypes.DELETE})
+    }
 
-    // const onDelete = () => {
-    //     setState({
-    //         ...state, deleted: true
-    //     })
-    // }
-
-    // const onReset = () => {
-    //     setState({
-    //         ...state, confirmed: false, value: '', deleted: false
-    //     })
-    // }
+    const onReset = () => {
+        dispatch({type:actionTypes.RESET})
+    }
     
+////////////////////////////////////////////////////////////////////////////////////////
     console.log(state);
 
     React.useEffect(() => {
@@ -60,11 +41,10 @@ function UseReducer({ name }) {
             setTimeout(() => {
                 console.log('Haciendo la validacion');
                 if (SECURITY_CODE === state.value) {
-                    dispatch({type:'CONFIRM'})
-                    // onConfirm();
+                    onConfirm();
                 } else {
-                    dispatch({type:'ERROR'})
-                    // onError();
+                    
+                    onError();
                 }
                 console.log(' Terminando la validacion');
             }, 3000)
@@ -94,16 +74,13 @@ function UseReducer({ name }) {
                         value={state.value}
                         onChange={
                             (event) => {
-                                dispatch({type:'WRITE', payload: event.target.value})
-                                // onWrite(event);
+                                onWrite(event);
                             }
                         }
                     />
                     <button
                         onClick={
-                            () => 
-                            // onCheck()
-                            dispatch({type:'CHECK'})
+                            onCheck
                         }
                     >Comprobar</button>
                 </div>
@@ -114,15 +91,14 @@ function UseReducer({ name }) {
         return (
             <React.Fragment>
                 <p>Estado de confirmacion. Seguro de eliminar?</p>
-                <button onClick={() =>
-                    // onDelete()
-                    dispatch({type:'DELETE'})
+                <button onClick={
+                    onDelete                 
                 }
                 >Si, eliminar</button>
                 <button
                     onClick={() => 
-                        // onReset()
-                        dispatch({type:'RESET'})
+                        onReset()
+                        
                     }
                 >No eliminar</button>
             </React.Fragment>
@@ -131,11 +107,10 @@ function UseReducer({ name }) {
         return (
             <React.Fragment>
                 <p>Confirmado. Eliminado con exito</p>
-                <p>Volver a crear el useState?</p>
+                <p>Volver a crear el useReducer?</p>
                 <button
                     onClick={
-                        () =>
-                        dispatch({type:'RESET'})
+                        onReset
                     }
                 >Volver al estado inicial</button>
             </React.Fragment>
@@ -163,40 +138,50 @@ function UseReducer({ name }) {
 //     }
 // }
 
-// const reducerSwitches = (stateReducerSwitch, action) => {
-//     switch(action.type){
-//         case 'ERROR': return {
-//             ...stateReducerSwitch,
-//             loading: false,
-//             error: true
-//         }
-//         case 'CHECK': return {
-//             ...stateReducerSwitch,
-//             loading: true,
-//         }
-//         case 'CONFIRM': return {
-//             ...stateReducerSwitch,
-//             loading: false,
-//             error: false,
-//             confirmed: true
-//         }
-//         case 'WRITE': return {
-//             ...stateReducerSwitch,
-//             value: action.payload,
-//             error: false
-//         }
-//         case 'DELETE': return {
-//             ...stateReducerSwitch, deleted: true
-//         }
-//         case 'RESET': return {
-//         ...stateReducerSwitch, confirmed: false, value: '', deleted: false
-//         }
-//         default:
-//             return{
-//                 ...stateReducerSwitch
-//             }
-//     }
-// }
+
+const actionTypes = {
+    CONFIRM : 'CONFIRM',
+    ERROR: 'ERROR',
+    CHECK: 'CHECK',
+    WRITE: 'WRITE',
+    DELETE: 'DELETE',
+    RESET: 'RESET'
+}
+
+const reducerSwitches = (stateReducerSwitch, action) => {
+    switch(action.type){
+        case actionTypes.ERROR: return {
+            ...stateReducerSwitch,
+            loading: false,
+            error: true
+        }
+        case actionTypes.CHECK: return {
+            ...stateReducerSwitch,
+            loading: true,
+        }
+        case actionTypes.CONFIRM: return {
+            ...stateReducerSwitch,
+            loading: false,
+            error: false,
+            confirmed: true
+        }
+        case actionTypes.WRITE: return {
+            ...stateReducerSwitch,
+            value: action.payload,
+            error: false
+        }
+        case actionTypes.DELETE: return {
+            ...stateReducerSwitch, deleted: true
+        }
+        case actionTypes.RESET: return {
+        ...stateReducerSwitch, confirmed: false, value: '', deleted: false
+        }
+        default:
+            return{
+                ...stateReducerSwitch
+            }
+    }
+}
 
 const  initialState = {
     value: '',
@@ -206,43 +191,43 @@ const  initialState = {
     confirmed: false,
 }
 
-const reducerObjects = (state,payload) => ({
-        'CONFIRM': {
-            ...state,
-            loading: false,
-            error: false,
-            confirmed: true
-        },
-        'ERROR':{
-            ...state,
-            loading: false,
-            error: true,
-        },
-        'CHECK':{
-            ...state,
-            loading: true,
-        },
-        'WRITE':{
-            ...state,
-            value: payload,
-            error: false,
-        },
-        'DELETE':{
-            ...state, deleted: true,
-        },
-        'RESET':{
-            ...state, confirmed: false, value: '', deleted: false,
-        }
-})
+// const reducerObjects = (state,payload) => ({
+//         'CONFIRM': {
+//             ...state,
+//             loading: false,
+//             error: false,
+//             confirmed: true
+//         },
+//         'ERROR':{
+//             ...state,
+//             loading: false,
+//             error: true,
+//         },
+//         'CHECK':{
+//             ...state,
+//             loading: true,
+//         },
+//         'WRITE':{
+//             ...state,
+//             value: payload,
+//             error: false,
+//         },
+//         'DELETE':{
+//             ...state, deleted: true,
+//         },
+//         'RESET':{
+//             ...state, confirmed: false, value: '', deleted: false,
+//         }
+// })
 
-const reducer = (state, action) => {
-    if(reducerObjects(state)[action.type]){
-        return reducerObjects(state, action.payload)[action.type];
-    }else{
-        return {
-            ...state,
-        };
-    }
-}
+// const reducer = (state, action) => {
+//     if(reducerObjects(state)[action.type]){
+//         return reducerObjects(state, action.payload)[action.type];
+//     }else{
+//         return {
+//             ...state,
+//         };
+//     }
+// }
 
 export { UseReducer };
